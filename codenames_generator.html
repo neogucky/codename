@@ -1,0 +1,160 @@
+<html>
+   <head>
+		
+	<style>
+		.assasin {
+			background-color: black; }
+			
+		.assasin:after {
+			content: "X";
+			font-size: 33px;
+			color: white;
+			font-family: verdana;
+			padding-left: 21px; }
+			
+		.agent {
+			background-color: green; }
+			
+		.agent:after {
+			content: "O";
+			font-size: 33px;
+			color: white;
+			font-family: verdana;
+			padding-left: 21px; }
+			
+		.civilist {
+			background-color: #e1c487; }
+			
+		.part_time_assasin {
+			background-color: grey; }
+			
+		td {
+			border-radius: 10px;
+			border: solid white 2px;
+			height: 45px;
+			width: 65px;
+			outline-offset: 0px;
+			outline: solid white 4px;			}
+			
+		table {
+			margin-bottom: 50px;
+			border: 2px black solid;
+			border-radius: 20px;
+			padding: 10px;			}
+			
+	</style>
+   
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script>
+		var field = new Array();
+		
+			var player = Object.freeze({
+				 "player_one": 1,
+				 "player_two": 2,
+				 "solution": 3
+			 });
+			 
+			/* Alle types */
+			 var type = Object.freeze({
+				 "assasin": "assasin",
+				 "agent": "agent",
+				 "civilist": "civilist",
+				 "part_time_assasin": "part_time_assasin"
+			 });
+			 
+         $(document).ready(function() {
+
+			 insertFields(type.assasin, type.agent, type.part_time_assasin, 1);
+			 insertFields(type.agent, type.assasin, type.part_time_assasin, 1);
+			 insertFields(type.agent, type.civilist, type.agent, 5);
+			 insertFields(type.civilist, type.agent, type.agent, 5);
+			 insertFields(type.agent, type.agent, type.agent, 3);
+			 insertFields(type.civilist, type.assasin, type.part_time_assasin, 1);
+			 insertFields(type.assasin, type.civilist, type.part_time_assasin, 1);
+			 insertFields(type.assasin, type.assasin, type.part_time_assasin, 1);
+			 insertFields(type.civilist,type.civilist,type.civilist, 7);
+
+			 shuffle(field);	
+			 			 
+			 renderTable( player.player_one );
+			 renderTable( player.player_two );
+
+		 });
+
+		 function insertFields(field_player_one, field_player_two, field_solution , count) {
+			 for (var i = 0; i < count; i++) {
+				 field.push({ "player_one": field_player_one, "player_two": field_player_two, "solution": field_solution });
+			 }
+		 }
+
+		 function renderTable( agent ) {
+		 
+			 var tbl = $("<table>");
+
+			 for (var r = 0; r < 5; r++) {
+				 var row = $("<tr>");
+	
+				 for (var c = 0; c < 5; c++) {
+					 var td = $("<td>");		 
+					 td.addClass(decypherForAgent(agent, [r * 5 + c]));
+					 row.append(td);
+				 }
+
+				 tbl.append(row); 
+			 }
+			 $("#tables").append(tbl);
+		 }
+	
+		function decypherForAgent(agent, index){
+			if (agent == player.player_one){
+				return field[index].player_one;
+			}
+			if (agent == player.player_two){
+				return field[index].player_two;
+			}
+			if (agent == player.solution){
+				return field[index].solution;
+			}
+			
+			console.log("Error: agent " + agent + " or field " + field[index] + " are incorrect!");
+		}
+		 
+		 
+		 /*
+		 * https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array/25984542
+		 */
+		 function shuffle(array, shuffleCode) {
+		  var currentIndex = array.length, temporaryValue, randomIndex;
+
+		  // While there remain elements to shuffle...
+		  while (0 !== currentIndex) {
+
+			// Pick a remaining element...
+
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+			
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		  }
+
+		  return array;
+		}
+		
+		ToBase64 = function (u8) {
+			return btoa(String.fromCharCode.apply(null, u8));
+		}
+
+		FromBase64 = function (str) {
+			return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
+		}
+	
+		
+	</script>
+   </head>
+   <body>
+      <div id="tables"></div>
+   </body>
+</html>
