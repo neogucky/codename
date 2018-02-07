@@ -2,6 +2,28 @@
    <head>
 		
 	<style>
+	
+		table.reversed {
+			-moz-transform: scale(-1, -1);
+			-webkit-transform: scale(-1, -1);
+			-o-transform: scale(-1, -1);
+			transform: scale(-1, -1); }
+	
+		div.fieldgroup table:first-child {
+			float:left;
+		}
+			
+		.fieldgroup {
+			margin-top: 340px;
+		}
+			
+		div.fieldgroup table {
+			-moz-transform: rotate(90deg);
+			-webkit-transform: rotate(90deg);
+			-o-transform: rotate(90deg);
+			transform: rotate(90deg);
+		}
+			
 		.assasin {
 			background-color: black; }
 			
@@ -13,7 +35,7 @@
 			padding-left: 21px; }
 			
 		.agent {
-			background-color: green; }
+			background-color: #119e11; }
 			
 		.agent:after {
 			content: "O";
@@ -34,14 +56,19 @@
 			height: 45px;
 			width: 65px;
 			outline-offset: 0px;
-			outline: solid white 4px;			}
+			outline: solid white 4px; }
 			
 		table {
-			margin-bottom: 50px;
 			border: 2px black solid;
 			border-radius: 20px;
-			padding: 10px;			}
+			padding: 10px; }
 			
+		body {
+			margin-top: -200px;
+			width: 785px;
+			float:none;
+		}
+					
 	</style>
    
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -74,12 +101,21 @@
 			 insertFields(type.assasin, type.assasin, type.part_time_assasin, 1);
 			 insertFields(type.civilist,type.civilist,type.civilist, 7);
 
-			 shuffle(field);	
-			 			 
-			 renderTable( player.player_one );
-			 renderTable( player.player_two );
-
+			 
+			 //more than two groups break the print view
+			 for (var i = 0; i < 2; i++) {
+				generateFieldgroup(); }
+			 
 		 });
+		 
+		 function generateFieldgroup(){
+			 shuffle(field);	
+			 var fieldDiv = $('<div>');
+			 fieldDiv.addClass('fieldgroup');
+			 renderTable(fieldDiv, player.player_one );
+			 renderTable(fieldDiv, player.player_two );
+			 $('body').append(fieldDiv);
+		 }
 
 		 function insertFields(field_player_one, field_player_two, field_solution , count) {
 			 for (var i = 0; i < count; i++) {
@@ -87,7 +123,7 @@
 			 }
 		 }
 
-		 function renderTable( agent ) {
+		 function renderTable( fieldDiv, agent ) {
 		 
 			 var tbl = $("<table>");
 
@@ -102,7 +138,12 @@
 
 				 tbl.append(row); 
 			 }
-			 $("#tables").append(tbl);
+			 
+			 if (agent == player.player_two){
+				tbl.addClass("reversed");
+			 }
+			 
+			 fieldDiv.append(tbl);
 		 }
 	
 		function decypherForAgent(agent, index){
@@ -155,6 +196,5 @@
 	</script>
    </head>
    <body>
-      <div id="tables"></div>
    </body>
 </html>
